@@ -2,120 +2,24 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Contacto</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            margin-top: 2rem;
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2.2rem;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        label {
-            color: #34495e;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        button {
-            background-color: #3498db;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .volver-link {
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .volver-link a {
-            color: #2c3e50;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .volver-link a:hover {
-            color: #3498db;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Contáctanos</h1>
-        <form method="POST">
-            <div>
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" required />
-            </div>
+    <h1>Contáctanos</h1>
+    <form method="POST">
+        <label for="nombre">Nombre:</label><br />
+        <input type="text" id="nombre" name="nombre" required /><br /><br/>
 
-            <div>
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" required />
-            </div>
+        <label for="email">Correo electrónico:</label><br/>
+        <input type="email" id="email" name="email" required /><br /><br />
 
-            <div>
-                <label for="mensaje">Mensaje</label>
-                <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
-            </div>
+        <label for="mensaje">Mensaje:</label><br />
+        <textarea id="mensaje" name="mensaje" rows="5" required></textarea><br /><br />
 
-            <button type="submit">Enviar mensaje</button>
-        </form>
-        <div class="volver-link">
-            <a href="index.html">← Volver a la página principal</a>
-        </div>
-    </div>
+        <button>Enviar</button>
+    </form>
+    <h4>
+        <a href="index.html">Volver a la página principal</a>
+    </h4>
 </body>
 </html>
