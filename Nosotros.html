@@ -4,6 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosotros</title>
+    <style>
+        .contact-form {
+            max-width: 500px;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .error {
+            border-color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>Nosotros</h1>
@@ -19,7 +63,81 @@
     <h2>Nuestra Misión</h2>
     <p>Proporcionar soluciones innovadoras que mejoren la vida de nuestros clientes.</p>
 
+    <h2>Contáctanos</h2>
+    <div class="contact-form">
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Mensaje:</label>
+                <textarea id="message" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit">Enviar Mensaje</button>
+        </form>
+        <div id="successMessage" class="success-message" style="display: none;">
+            ¡Gracias por tu mensaje! Te contactaremos pronto.
+        </div>
+    </div>
+
     <h4><a href="index.html">Volver a la página principal</a></h4>
     
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            // Validación básica
+            let isValid = true;
+            
+            // Limpiar errores previos
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            
+            if (name === '') {
+                document.getElementById('name').classList.add('error');
+                isValid = false;
+            }
+            
+            if (email === '' || !isValidEmail(email)) {
+                document.getElementById('email').classList.add('error');
+                isValid = false;
+            }
+            
+            if (message === '') {
+                document.getElementById('message').classList.add('error');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Simular envío del formulario
+                console.log('Formulario enviado:', { name, email, message });
+                
+                // Mostrar mensaje de éxito
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Limpiar formulario
+                this.reset();
+                
+                // Ocultar mensaje después de 5 segundos
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 5000);
+            }
+        });
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
 </body>
 </html>
