@@ -3,23 +3,277 @@
 <head>
     <meta charset="UTF-8" />
     <title>Formulario de Contacto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        .error {
+            border-color: #f44336 !important;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success {
+            border-color: #4CAF50 !important;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .character-count {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Contáctanos</h1>
-    <form method="POST">
-        <label for="nombre">Nombre:</label><br />
-        <input type="text" id="nombre" name="nombre" required /><br /><br/>
+    <div class="container">
+        <h1>Contáctanos</h1>
+        
+        <div id="successMessage" class="success-message">
+            ¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.
+        </div>
+        
+        <form id="contactForm" method="POST">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required />
+                <div id="nombreError" class="error-message">El nombre es requerido</div>
+            </div>
 
-        <label for="email">Correo electrónico:</label><br/>
-        <input type="email" id="email" name="email" required /><br /><br />
+            <div class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" required />
+                <div id="emailError" class="error-message">Ingresa un correo electrónico válido</div>
+            </div>
 
-        <label for="mensaje">Mensaje:</label><br />
-        <textarea id="mensaje" name="mensaje" rows="5" required></textarea><br /><br />
+            <div class="form-group">
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" rows="5" required maxlength="500"></textarea>
+                <div class="character-count">
+                    <span id="charCount">0</span>/500 caracteres
+                </div>
+                <div id="mensajeError" class="error-message">El mensaje es requerido</div>
+            </div>
 
-        <button>Enviar</button>
-    </form>
-    <h4>
-        <a href="index.html">Volver a la página principal</a>
-    </h4>
+            <button type="submit" id="submitBtn">Enviar</button>
+        </form>
+        
+        <div class="back-link">
+            <h4>
+                <a href="index.html">← Volver a la página principal</a>
+            </h4>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('contactForm');
+        const nombreInput = document.getElementById('nombre');
+        const emailInput = document.getElementById('email');
+        const mensajeInput = document.getElementById('mensaje');
+        const charCount = document.getElementById('charCount');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+
+        // Contador de caracteres para el mensaje
+        mensajeInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            if (length > 450) {
+                charCount.style.color = '#f44336';
+            } else {
+                charCount.style.color = '#666';
+            }
+        });
+
+        // Validación en tiempo real
+        function validateField(input, errorElement, validationFn) {
+            input.addEventListener('blur', function() {
+                if (validationFn(this.value)) {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                    errorElement.style.display = 'none';
+                } else {
+                    this.classList.remove('success');
+                    this.classList.add('error');
+                    errorElement.style.display = 'block';
+                }
+            });
+
+            input.addEventListener('input', function() {
+                if (this.classList.contains('error') && validationFn(this.value)) {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                    errorElement.style.display = 'none';
+                }
+            });
+        }
+
+        // Funciones de validación
+        const validateName = (name) => name.trim().length >= 2;
+        const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const validateMessage = (message) => message.trim().length >= 10;
+
+        // Aplicar validaciones
+        validateField(nombreInput, document.getElementById('nombreError'), validateName);
+        validateField(emailInput, document.getElementById('emailError'), validateEmail);
+        validateField(mensajeInput, document.getElementById('mensajeError'), validateMessage);
+
+        // Manejo del envío del formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombre = nombreInput.value.trim();
+            const email = emailInput.value.trim();
+            const mensaje = mensajeInput.value.trim();
+            
+            let isValid = true;
+            
+            // Validar todos los campos
+            if (!validateName(nombre)) {
+                nombreInput.classList.add('error');
+                document.getElementById('nombreError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!validateEmail(email)) {
+                emailInput.classList.add('error');
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!validateMessage(mensaje)) {
+                mensajeInput.classList.add('error');
+                document.getElementById('mensajeError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Deshabilitar botón temporalmente
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Enviando...';
+                
+                // Simular envío (en un caso real, aquí iría la petición al servidor)
+                setTimeout(() => {
+                    // Mostrar mensaje de éxito
+                    successMessage.style.display = 'block';
+                    
+                    // Limpiar formulario
+                    form.reset();
+                    charCount.textContent = '0';
+                    
+                    // Remover clases de validación
+                    document.querySelectorAll('.success, .error').forEach(el => {
+                        el.classList.remove('success', 'error');
+                    });
+                    
+                    // Restaurar botón
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Enviar';
+                    
+                    // Ocultar mensaje después de 5 segundos
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                    
+                    console.log('Formulario enviado:', { nombre, email, mensaje });
+                }, 1000);
+            }
+        });
+    </script>
 </body>
 </html>
