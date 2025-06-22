@@ -48,9 +48,11 @@ body:
     id: acciones
     attributes:
       label: Acciones o Checklist
-      placeholder: Ejemplo:
+      placeholder: |
         - Inventariar los archivos almacenados
-        - label: Determinar el espacio de disco duro necesario
-        - label: Decidir adquirir más discos duros (SCSI o SAS)
-        - label: Adquirir discos básicos para liberar el Storage
-        - label: Adquirir almacenamiento en la nube y migrar archivos
+        - Determinar el espacio de disco duro necesario
+        - Decidir adquirir más discos duros (SCSI o SAS)
+        - Adquirir discos básicos para liberar el Storage
+        - Adquirir almacenamiento en la nube y migrar archivos
+    validations:
+      required: false
