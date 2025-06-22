@@ -15,7 +15,7 @@ body:
     id: lugar
     attributes:
       label: Lugar de ocurrencia
-      placeholder: Ejemplo: En el Storage del Proyecto de Diseño de Sistemas.
+      placeholder: Ejemplo En el Storage del Proyecto de Diseño de Sistemas
     validations:
       required: true
 
@@ -48,7 +48,7 @@ body:
     id: acciones
     attributes:
       label: Acciones o Checklist
-      placeholder: 
+      placeholder: |
         - Inventariar los archivos almacenados
         - Determinar el espacio de disco duro necesario
         - Decidir adquirir más discos duros (SCSI o SAS)
