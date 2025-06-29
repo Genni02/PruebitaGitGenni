@@ -1,24 +1,18 @@
 - name: 🧪 Ejecutar prueba de HTML
-  id: tidy
   shell: bash
   run: |
-    # Busca todos los archivos .html y los pasa uno a uno a tidy
-    find . -type f -name "*.html" > html_files.txt
+    > tidy_errors.txt  # limpia el archivo de errores
 
-    # Crea o vacía el archivo de errores
-    > tidy_errors.txt
-
-    # Procesa cada archivo
-    while IFS= read -r file; do
+    for file in *.html; do
       echo "🔍 Validando: $file"
       tidy -e "$file" 2>> tidy_errors.txt
-    done < html_files.txt
+    done
 
     if [[ -s tidy_errors.txt ]]; then
       echo "❌ Hay problemas en el test HTML:"
       cat tidy_errors.txt
-      echo "::error title=Hay problemas en el test HTML::Revisa las etiquetas mencionadas."
+      echo "::error title=Hay problemas en el test HTML::Corrige los errores detectados en el HTML."
       exit 1
     else
-      echo "✅ Todo OK – sin errores de marcado"
+      echo "✅ Todo OK – sin errores de marcado"
     fi
