@@ -1,18 +1,36 @@
-- name: 🧪 Ejecutar prueba de HTML
-  shell: bash
-  run: |
-    > tidy_errors.txt  # limpia el archivo de errores
+name: Validar HTML
 
-    for file in *.html; do
-      echo "🔍 Validando: $file"
-      tidy -e "$file" 2>> tidy_errors.txt
-    done
+on: [push, pull_request]
 
-    if [[ -s tidy_errors.txt ]]; then
-      echo "❌ Hay problemas en el test HTML:"
-      cat tidy_errors.txt
-      echo "::error title=Hay problemas en el test HTML::Corrige los errores detectados en el HTML."
-      exit 1
-    else
-      echo "✅ Todo OK – sin errores de marcado"
-    fi
+jobs:
+  html-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v3
+
+      # Instalamos tidy en modo silencioso (-qq para update, -yq para install)
+      - name: 📦 Instalar HTML Tidy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yq tidy
+
+      # Ejecutamos tidy y bloqueamos si hay errores
+      - name: 🧪 Ejecutar prueba de HTML
+        id: tidy
+        shell: bash
+        run: |
+          # Ejecuta tidy en modo 'errores' (-e) sobre todos los .html
+          # Redirige stderr a un archivo para poder inspeccionarlo
+          tidy -e **/*.html 2> tidy_errors.txt
+
+          if [[ -s tidy_errors.txt ]]; then
+            echo "❌ Hay problemas en el test HTML:"
+            cat tidy_errors.txt
+            # Mostramos una anotación para que se vea arriba del log del job
+            echo "::error title=Hay problemas en el test HTML,file=tidy_errors.txt::Revisa las etiquetas mencionadas."
+            exit 1    # ← BLOQUEA el PR hasta que se corrija
+          else
+            echo "✅ Todo OK – sin errores de marcado"
+          fi
