@@ -7,12 +7,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repositorio
+      - name: 📥 Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: Instalar HTML Tidy
-        run: sudo apt-get install -y tidy
-
-      - name: Validar HTML
+      - name: 📦 Instalar HTML Tidy
         run: |
-          tidy -qe **/*.html || true
+          sudo apt-get update -qq
+          sudo apt-get install -yq tidy
+
+      - name: 🧪 Validar archivos HTML en la raíz
+        shell: bash
+        run: |
+          > tidy_errors.txt  # Limpiar archivo de errores
+
+          for file in *.html; do
+            echo "🔍 Validando: $file"
+            tidy -e "$file" 2>> tidy_errors.txt
+          done
+
+          if [[ -s tidy_errors.txt ]]; then
+            echo -e "\n❌ Hay problemas en el test HTML:\n"
+            cat tidy_errors.txt
+            echo "::error title=Errores de HTML detectados::Corrige las etiquetas señaladas antes de hacer merge."
+            exit 1
+          else
+            echo -e "\n✅ Todo OK – sin errores de marcado"
+          fi
