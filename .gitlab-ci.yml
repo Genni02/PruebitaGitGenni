@@ -1,0 +1,33 @@
+stages:
+  - test
+
+validar_html:
+  stage: test
+  image: ubuntu:latest
+  before_script:
+    - apt-get update -qq
+    - apt-get install -yq tidy
+  script: |
+    > tidy_output.txt
+    err=0
+    for file in *.html; do
+      [ -f "$file" ] || continue
+      echo "🔍 Validando: $file"
+      {
+        echo "Archivo: $file"
+        tidy -e "$file" 2>&1
+        echo
+      } >> tidy_output.txt
+      [ $? -ne 0 ] && err=1
+    done
+    if [ $err -ne 0 ]; then
+      echo "❌ Se encontraron errores en el HTML:"
+      cat tidy_output.txt
+      exit 1
+    else
+      echo "✅ Todo OK – sin errores de marcado"
+    fi
+  artifacts:
+    when: on_failure
+    paths:
+      - tidy_output.txt
