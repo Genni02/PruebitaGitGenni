@@ -1,40 +1,50 @@
 name: Validar HTML
 
-on: [push, pull_request]
+on:
+  # Corre en cada push y en cada pull request
+  push:
+  pull_request:
 
 jobs:
-  html-check:
+  html-lint:
     runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: 📦 Instalar HTML Tidy
+      - name: 📦 Instalar HTML Tidy
         run: |
           sudo apt-get update -qq
           sudo apt-get install -yq tidy
 
-      - name: 🧪 Validar archivos HTML en la raíz
+      - name: 🧪 Ejecutar Tidy y bloquear si hay errores
         shell: bash
         run: |
-          > tidy_output.txt
-          > tidy_errors.txt
+          > tidy_errors.txt        # Vacía/crea el archivo de errores
+          err=0                    # Flag para saber si hubo error
 
+          # Recorre todos los .html en la raíz (ajusta si usas carpetas)
           for file in *.html; do
-            echo "🔍 Validando: $file"
-            tidy -e "$file" 2>> tidy_output.txt
+            if [[ -f "$file" ]]; then
+              echo "🔍 Validando: $file"
+              echo "Archivo: $file" >> tidy_errors.txt
+              # -e = solo errores, -q = salida concisa
+              tidy -e -q "$file" 2>> tidy_errors.txt
+              rc=$?
+              if [[ $rc -ne 0 ]]; then
+                err=1              # Marcamos que hubo error
+              fi
+              echo "" >> tidy_errors.txt
+            fi
           done
 
-          # Filtra solo las líneas que contienen errores reales
-          grep -i "error:" tidy_output.txt > tidy_errors.txt || true
-
-          if [[ -s tidy_errors.txt ]]; then
-            echo -e "\n❌ Hay problemas en el test HTML:\n"
+          # Si hubo errores, mostramos y bloqueamos el PR
+          if [[ $err -ne 0 ]]; then
+            echo -e "\n❌ Se encontraron problemas en el HTML:\n"
             cat tidy_errors.txt
-            echo "::error title=Errores de HTML detectados::Corrige las etiquetas señaladas antes de hacer merge."
-            exit 1
+            echo "::error title=Errores de HTML detectados::Corrige las líneas indicadas antes de hacer merge."
+            exit 1                # ← falla el workflow y bloquea el merge
           else
             echo -e "\n✅ Todo OK – sin errores de marcado"
           fi
-
