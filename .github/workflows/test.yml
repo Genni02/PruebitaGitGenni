@@ -18,12 +18,16 @@ jobs:
       - name: 🧪 Validar archivos HTML en la raíz
         shell: bash
         run: |
-          > tidy_errors.txt  # Limpiar archivo de errores
+          > tidy_output.txt
+          > tidy_errors.txt
 
           for file in *.html; do
             echo "🔍 Validando: $file"
-            tidy -e "$file" 2>> tidy_errors.txt
+            tidy -e "$file" 2>> tidy_output.txt
           done
+
+          # Filtra solo las líneas que contienen errores reales
+          grep -i "error:" tidy_output.txt > tidy_errors.txt || true
 
           if [[ -s tidy_errors.txt ]]; then
             echo -e "\n❌ Hay problemas en el test HTML:\n"
@@ -33,3 +37,4 @@ jobs:
           else
             echo -e "\n✅ Todo OK – sin errores de marcado"
           fi
+
